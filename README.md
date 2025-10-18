@@ -1,6 +1,6 @@
 # 纯Rust语言实现Modbus协议
 
-为了能够在Rust语言中实现Modbus协议，并完成设备的介入。支持Modbus TCP协议，Modbus RTU协议，以及Modbus RTU over TCP协议。每个协议的详细说明可以参考protocol实现的readme.md文件。
+为了能够在Rust语言中实现Modbus协议，并完成设备的接入。支持Modbus TCP协议，Modbus RTU协议，以及Modbus RTU over TCP协议。每个协议的详细说明可以参考protocol实现的readme.md文件。
 
 ## 项目结构
 
