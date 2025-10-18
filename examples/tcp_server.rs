@@ -7,7 +7,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("Modbus TCP Server Example");
     
     // 创建Modbus TCP服务器
-    let server = ModbusTcpServer::new("127.0.0.1:1502", 1).await?;
+    let server = ModbusTcpServer::new("127.0.0.1:502", 1).await?;
     
     // 设置一些示例数据
     server.set_coil(0, true);
