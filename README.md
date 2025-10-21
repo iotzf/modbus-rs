@@ -67,6 +67,77 @@ modbus-rs
    * BADC：大端序-字节交换  
    * CDAB：小端序-字节交换
 
+我继续创建多从机 RTU 服务器和 RTU over TCP 服务器：
+
+
+[2 tools called]
+
+现在我需要更新 `mod.rs` 文件来导出这些新的多从机服务器：
+
+
+[2 tools called]
+
+现在让我创建一个示例来演示如何使用多从机服务器：
+
+
+[2 tools called]
+
+现在让我检查是否有任何编译错误：
+
+
+[2 tools called]
+
+完成！我已经成功实现了支持多个 slave ID 的 Modbus 服务器。
+
+## 多从机服务器功能
+
+### 新增的多从机服务器：
+
+1. **ModbusMultiSlaveTcpServer** - 多从机 TCP 服务器
+2. **ModbusMultiSlaveRtuServer** - 多从机 RTU 服务器  
+3. **ModbusMultiSlaveRtuOverTcpServer** - 多从机 RTU over TCP 服务器
+
+### 主要特性：
+
+**服务器端功能：**
+- `add_slave(slave_id)` - 添加新的从机
+- `remove_slave(slave_id)` - 移除从机
+- `set_coil(slave_id, address, value)` - 为指定从机设置线圈
+- `set_discrete_input(slave_id, address, value)` - 为指定从机设置离散输入
+- `set_holding_register(slave_id, address, value)` - 为指定从机设置保持寄存器
+- `set_input_register(slave_id, address, value)` - 为指定从机设置输入寄存器
+- `get_slave_ids()` - 获取所有已注册的从机 ID
+
+**客户端功能（之前已实现）：**
+- `read_coils_with_slave_id(slave_id, address, count)` - 按从机 ID 读取线圈
+- `read_holding_registers_with_slave_id(slave_id, address, count)` - 按从机 ID 读取保持寄存器
+- 等等...
+
+### 使用示例：
+
+**服务器端：**
+```rust
+let server = ModbusMultiSlaveTcpServer::new("127.0.0.1:502").await?;
+server.add_slave(1);
+server.add_slave(2);
+server.set_coil(1, 0, true)?;
+server.set_holding_register(2, 0, 1000)?;
+server.run().await?;
+```
+
+**客户端：**
+```rust
+let mut client = ModbusTcpClient::new("127.0.0.1", 502, 1).await?;
+let coils = client.read_coils_with_slave_id(1, 0, 2).await?;
+let registers = client.read_holding_registers_with_slave_id(2, 0, 2).await?;
+```
+
+### 错误处理：
+- 当客户端请求不存在的从机 ID 时，服务器会返回异常响应
+- 所有操作都有适当的错误处理
+
+现在您可以在同一个 Modbus 服务器上支持多个不同的从机设备，每个从机都有独立的数据存储空间！
+
 ## 工具
 
 * Modbus协议分析工具
