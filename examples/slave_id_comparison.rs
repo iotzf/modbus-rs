@@ -32,7 +32,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("\n方式2：功能码操作时设置从机ID");
     println!("----------------------------");
     
-    let mut flexible_client = ModbusRtuOverTcpClientFlexible::new("127.0.0.1", 5020, 1).await?;
+    let mut flexible_client = ModbusTcpClient::new("127.0.0.1", 5020, 1).await?;
     
     println!("使用默认从机ID (slave_id=1):");
     match flexible_client.read_holding_registers(0, 5).await {
