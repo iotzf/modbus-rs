@@ -139,11 +139,15 @@ impl ModbusMultiSlaveTcpServer {
                     // 解析请求
                     match ModbusTcp::parse_request(request_data) {
                         Ok((transaction_id, request)) => {
-                            // 检查从机是否存在
-                            let slaves_guard = slaves.lock().unwrap();
-                            if let Some(slave_data) = slaves_guard.get(&request.slave_id) {
+                            // 检查从机是否存在并克隆数据
+                            let slave_data = {
+                                let slaves_guard = slaves.lock().unwrap();
+                                slaves_guard.get(&request.slave_id).cloned()
+                            };
+                            
+                            if let Some(slave_data) = slave_data {
                                 // 处理请求
-                                let response = Self::handle_request(&request, slave_data).await;
+                                let response = Self::handle_request(&request, &slave_data).await;
                                 
                                 // 发送响应
                                 if let Ok(response_frame) = ModbusTcp::build_response(&response, transaction_id) {
